@@ -1,41 +1,58 @@
-<div class="container">
+<!-- Le gestionnaire de notifications (invisible mais nécessaire) -->
+<p-toast></p-toast>
+
+<div class="main-container">
+
+    <!-- En-tête -->
     <header>
-        <h1>NEUCLID</h1>
-        <p>Neuro-Symbolic Geometry Engine</p>
+        <div class="logo">📐 NEUCLID</div>
+        <div class="subtitle">AI Scientific Drafting</div>
     </header>
 
-    <main>
-        <div class="input-area">
-            <textarea [(ngModel)]="prompt" placeholder="Décrivez votre figure ici (ex: Draw a triangle ABC...)"
-                rows="4"></textarea>
+    <div class="content-grid">
 
-            <!-- On lit les signaux avec des parenthèses () -->
-            <button (click)="generateFigure()" [disabled]="isLoading() || !prompt">
-                @if (isLoading()) {
-                <span>Génération en cours...</span>
-                } @else {
-                <span>Générer la Figure</span>
-                }
-            </button>
-        </div>
+        <!-- COLONNE GAUCHE : COMMANDE -->
+        <p-card header="Votre Demande" styleClass="prompt-card">
+            <div class="input-group">
+                <textarea rows="5" cols="30" pInputTextarea [(ngModel)]="prompt" [autoResize]="true"
+                    placeholder="Ex: Dessine un triangle rectangle ABC..." class="full-width-textarea">
+        </textarea>
 
-        <!-- Zone d'erreur -->
-        @if (errorMessage()) {
-        <div class="error-box">
-            {{ errorMessage() }}
-        </div>
-        }
-
-        <!-- Zone de résultat -->
-        @if (imageUrl()) {
-        <div class="result-area">
-            <h3>Résultat :</h3>
-            <div class="image-wrapper">
-                <img [src]="imageUrl()" alt="Figure géométrique générée">
+                <p-button label="Générer la Figure" icon="pi pi-bolt" [loading]="isLoading()"
+                    (onClick)="generateFigure()" [disabled]="!prompt">
+                </p-button>
             </div>
+        </p-card>
 
-            <a [href]="imageUrl()" target="_blank" class="download-link">Ouvrir l'image en grand</a>
-        </div>
-        }
-    </main>
+        <!-- COLONNE DROITE : RÉSULTAT -->
+        <p-card header="Résultat" styleClass="result-card">
+
+            <!-- Cas 1 : Chargement (SKELETON) -->
+            @if (isLoading()) {
+            <div class="loading-state">
+                <p-skeleton width="100%" height="400px" borderRadius="12px"></p-skeleton>
+                <div style="margin-top: 10px; display: flex; justify-content: center">
+                    <p-skeleton width="40%" height="20px"></p-skeleton>
+                </div>
+            </div>
+            }
+
+            <!-- Cas 2 : Image Reçue (IMAGE VIEWER) -->
+            @else if (imageUrl()) {
+            <div class="image-display">
+                <p-image [src]="imageUrl() || ''" alt="Geometry" [preview]="true" width="100%">
+                </p-image>
+            </div>
+            }
+
+            <!-- Cas 3 : Vide (Placeholder) -->
+            @else {
+            <div class="empty-state">
+                <i class="pi pi-image" style="font-size: 4rem; color: var(--surface-400)"></i>
+                <p>La figure apparaîtra ici</p>
+            </div>
+            }
+        </p-card>
+
+    </div>
 </div>
