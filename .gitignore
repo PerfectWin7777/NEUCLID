@@ -1,0 +1,36 @@
+# --- Global ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+command.txt
+
+
+# --- Python / Backend ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.env
+.pytest_cache/
+htmlcov/
+dist/
+build/
+*.spec
+
+backend/temp_build
+backend/stop_server.bat
+backend/setup_env.bat
+backend/run_server.bat
+backend/venv/
+
+backend/firebase_credentials.json
+
+
+
+# --- Node / Frontend (Prévision) ---
+node_modules/
+dist/
+.angular/

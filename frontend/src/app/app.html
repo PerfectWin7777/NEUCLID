@@ -1,0 +1,41 @@
+<div class="container">
+    <header>
+        <h1>NEUCLID</h1>
+        <p>Neuro-Symbolic Geometry Engine</p>
+    </header>
+
+    <main>
+        <div class="input-area">
+            <textarea [(ngModel)]="prompt" placeholder="Décrivez votre figure ici (ex: Draw a triangle ABC...)"
+                rows="4"></textarea>
+
+            <!-- On lit les signaux avec des parenthèses () -->
+            <button (click)="generateFigure()" [disabled]="isLoading() || !prompt">
+                @if (isLoading()) {
+                <span>Génération en cours...</span>
+                } @else {
+                <span>Générer la Figure</span>
+                }
+            </button>
+        </div>
+
+        <!-- Zone d'erreur -->
+        @if (errorMessage()) {
+        <div class="error-box">
+            {{ errorMessage() }}
+        </div>
+        }
+
+        <!-- Zone de résultat -->
+        @if (imageUrl()) {
+        <div class="result-area">
+            <h3>Résultat :</h3>
+            <div class="image-wrapper">
+                <img [src]="imageUrl()" alt="Figure géométrique générée">
+            </div>
+
+            <a [href]="imageUrl()" target="_blank" class="download-link">Ouvrir l'image en grand</a>
+        </div>
+        }
+    </main>
+</div>
