@@ -8,9 +8,9 @@ from fastapi.staticfiles import StaticFiles
 from src.config import settings
 from src.firebase_setup import initialize_firebase
 
+from src.core.startup import register_application_tools
 
-from src.api.v1 import geometry_router
-
+from src.api.v1 import generation
 
 # Configure logging
 logging.basicConfig(
@@ -22,18 +22,23 @@ log = logging.getLogger(__name__)
 # --- LIFESPAN (Startup & Shutdown) ---
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Code executed on startup
-    log.info("🚀 Starting NEUCLID API...")
+    # --- CODE EXÉCUTÉ AU DÉMARRAGE ---
+    log.info(f"🚀 Démarrage de {settings.PROJECT_NAME}...")
+    
+    # 1. Connexion Base de Données
     try:
         initialize_firebase()
     except Exception as e:
-        log.error(f"Emergency shutdown: Unable to connect to database. {e}")
-        # In prod, sys.exit(1)
+        log.error(f"⚠️ Attention: Impossible de connecter Firebase. {e}")
+    
+    # 2. Enregistrement des Outils (Factory Pattern)
+    # C'est ici que la magie opère : on charge Geometry2D, etc.
+    register_application_tools()
     
     yield
     
-    # Code executed on shutdown
-    log.info("🛑 Stopping NEUCLID API...")
+    # --- CODE EXÉCUTÉ À L'ARRÊT ---
+    log.info("🛑 Arrêt de NEUCLID API...")
 
 
 
@@ -64,7 +69,7 @@ app.mount("/static", StaticFiles(directory=settings.TEMP_BUILD_DIR), name="stati
 
 
 # --- Include Routers ---
-app.include_router(geometry_router.router, prefix=settings.API_V1_STR) 
+app.include_router(generation.router, prefix=settings.API_V1_STR)
 
 
 
@@ -77,7 +82,8 @@ async def root():
         "message": "Welcome to Neuclid API",
         "status": "running",
         "version": "0.1.0",
-        "project": settings.PROJECT_NAME
+        "project": settings.PROJECT_NAME,
+        "tools_loaded": True
     }
 
 if __name__ == "__main__":

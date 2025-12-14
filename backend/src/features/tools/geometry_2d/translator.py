@@ -75,7 +75,7 @@ from .models import (
 )
 
 # Le compilateur LaTeX
-from src.core.latex import compile_latex_to_image
+from src.core.latex_compiler import compile_latex_to_image
 
 log = logging.getLogger(__name__)
 
@@ -1375,7 +1375,7 @@ def generate_geometry_2d(
     input_data: Geometry2DInput, 
     show_axes: bool = False, 
     show_grid: bool = False
-) -> Path:
+) -> Tuple[Path, str]:
     """Fonction principale de l'outil de géométrie 2D (Sprint 1 - Points et Lignes).
     Args:
         input_data (Geometry2DInput): Les données d'entrée validées par Pydantic.
@@ -1393,7 +1393,7 @@ def generate_geometry_2d(
         
         image_path = compile_latex_to_image(latex_code)
         log.info(f"Compilation LaTeX réussie. Image : {image_path}")
-        return image_path
+        return image_path, latex_code 
         
     except Exception as e:
         log.error(f"Échec dans le workflow de l'outil de géométrie : {e}", exc_info=True)

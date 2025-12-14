@@ -1,0 +1,102 @@
+<div class="main-layout">
+
+    <!-- HEADER -->
+    <header class="top-bar">
+        <div class="logo">📐 Neuclid <span class="badge">v2.0</span></div>
+    </header>
+
+    <!-- WORKSPACE -->
+    <div class="workspace">
+        <p-splitter [style]="{'height': '100%'}" [panelSizes]="[20, 50, 30]">
+
+            <!-- 1. GAUCHE : HISTORIQUE -->
+            <ng-template pTemplate>
+                <div class="panel sidebar-left">
+                    <h3>Historique</h3>
+                    <div class="scroll-container">
+                        @for (item of appService.history(); track item) {
+                        <div class="history-item" [class.active]="item === appService.currentSelection()"
+                            (click)="appService.selectItem(item)">
+                            <i class="pi pi-file" style="font-size: 1.2rem"></i>
+                            <div class="item-info">
+                                <span class="tool-tag">{{ item.tool_name }}</span>
+                                <span class="date">{{ item.timestamp | date:'HH:mm:ss' }}</span>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </ng-template>
+
+            <!-- 2. CENTRE : CANVAS -->
+            <ng-template pTemplate>
+                <div class="panel center-canvas">
+
+                    <!-- ZONE D'AFFICHAGE (Image ou Vide) -->
+                    <div class="viewport">
+                        @if (appService.isLoading()) {
+                        <div class="state-msg">
+                            <i class="pi pi-spin pi-spinner" style="font-size: 3rem; color: #3b82f6"></i>
+                            <p>Génération en cours...</p>
+                        </div>
+                        }
+                        @else if (appService.currentSelection(); as current) {
+                        <div class="image-wrapper">
+                            <!-- On ajoute une ombre et une bordure blanche pour bien la voir -->
+                            <p-image [src]="current.image_url" alt="Resultat" [preview]="true" width="100%">
+                            </p-image>
+                        </div>
+                        }
+                        @else {
+                        <div class="state-msg">
+                            <h2>L'établi est vide</h2>
+                            <p>Utilisez la barre ci-dessous pour commencer.</p>
+                        </div>
+                        }
+                    </div>
+
+                    <!-- BARRE FLOTTANTE (Toujours visible maintenant) -->
+                    <div class="command-bar-container">
+                        <div class="floating-bar">
+                            <input type="text" pInputText [(ngModel)]="userPrompt" (keydown.enter)="onGenerate()"
+                                placeholder="Décrivez votre figure... (ex: Triangle ABC rouge)"
+                                [disabled]="appService.isLoading()">
+
+                            <p-button icon="pi pi-arrow-right" [rounded]="true" [text]="true" (onClick)="onGenerate()"
+                                [loading]="appService.isLoading()"></p-button>
+                        </div>
+                    </div>
+
+                </div>
+            </ng-template>
+
+            <!-- 3. DROITE : INSPECTEUR -->
+            <ng-template pTemplate>
+                <div class="panel sidebar-right">
+                    @if (appService.currentSelection(); as current) {
+
+                    <!-- Section Code LaTeX (50% hauteur) -->
+                    <div class="inspector-section half-height">
+                        <h3>Code LaTeX</h3>
+                        <textarea readonly>{{ current.latex_code }}</textarea>
+                    </div>
+
+                    <!-- Section JSON (50% hauteur) -->
+                    <div class="inspector-section half-height">
+                        <h3>Structure JSON</h3>
+                        <div class="json-viewer">
+                            <pre>{{ current.json_content | json }}</pre>
+                        </div>
+                    </div>
+
+                    } @else {
+                    <div class="placeholder-center">
+                        <p>Sélectionnez un objet pour voir ses propriétés.</p>
+                    </div>
+                    }
+                </div>
+            </ng-template>
+
+        </p-splitter>
+    </div>
+</div>

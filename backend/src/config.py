@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import List, Union
+from typing import List, Union, Optional
 
 from pydantic import AnyHttpUrl, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -22,10 +22,7 @@ class Settings(BaseSettings):
 
     # --- CORS (Frontend URLs) ---
     # List of URLs allowed to call the API
-    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = [
-        "http://localhost:4200", # Angular
-        "http://localhost:3000",
-    ]
+    BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     @field_validator("BACKEND_CORS_ORIGINS", mode="before")
     def assemble_cors_origins(cls, v: Union[str, List[str]]) -> List[str]:

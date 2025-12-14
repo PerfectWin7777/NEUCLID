@@ -1,5 +1,5 @@
-# **Guide Opérationnel de l'Outil : `geometry2D_tool`**
-*nom de l'outil*: `geometry2D_tool`
+# **Guide Opérationnel de l'Outil : `geometry_2d`**
+*nom de l'outil*: `geometry_2d`
 
 ## 1. MISSION ET PHILOSOPHIE DE L'OUTIL
 

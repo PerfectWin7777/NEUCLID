@@ -1,6 +1,8 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
-import { App } from './app/app';
+// On importe AppComponent (le nouveau nom) et non plus App
+// NOTE: Assure-toi que ton fichier s'appelle bien app.component.ts dans le dossier app/
+import { AppComponent } from './app/app.component';
 
-bootstrapApplication(App, appConfig)
-  .catch((err) => console.error(err));
+bootstrapApplication(AppComponent, appConfig)
+    .catch((err) => console.error(err));

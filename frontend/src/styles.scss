@@ -1,1 +1,21 @@
-/* You can add global styles to this file, and also import other style files */
+/* src/styles.scss */
+@import "primeng/resources/themes/aura-dark-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    /* Empêche tout scrollbar global moche */
+    background-color: #1e1e1e;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* On force tous les éléments à utiliser une boite logique */
+* {
+    box-sizing: border-box;
+}

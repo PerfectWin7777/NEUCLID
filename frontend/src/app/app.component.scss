@@ -1,0 +1,247 @@
+// Variables
+$bg-dark: #09090b; // Noir fond canvas
+$bg-ui: #18181b; // Gris interface
+$border: #27272a; // Bordure
+$accent: #3b82f6; // Bleu
+
+:host {
+    display: block;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.main-layout {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+// HEADER
+.top-bar {
+    height: 50px;
+    background-color: $bg-ui;
+    border-bottom: 1px solid $border;
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    color: white;
+    font-weight: bold;
+
+    .badge {
+        background: $accent;
+        font-size: 0.7rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        margin-left: 8px;
+    }
+}
+
+.workspace {
+    flex: 1;
+    overflow: hidden; // Crucial
+}
+
+// SIDEBARS (Gauche et Droite)
+.panel {
+    height: 100%;
+    width: 100%;
+    background-color: $bg-ui;
+    display: flex;
+    flex-direction: column;
+
+    h3 {
+        padding: 10px 15px;
+        margin: 0;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #71717a;
+        border-bottom: 1px solid $border;
+        background: rgba(255, 255, 255, 0.02);
+    }
+}
+
+// GAUCHE : Historique
+.scroll-container {
+    flex: 1;
+    overflow-y: auto; // Scrollbar si trop d'historique
+    padding: 10px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 5px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    color: #e4e4e7;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &.active {
+        background: rgba(59, 130, 246, 0.15);
+        border-color: $accent;
+        color: white;
+    }
+
+    .item-info {
+        margin-left: 10px;
+        display: flex;
+        flex-direction: column;
+
+        .tool-tag {
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .date {
+            font-size: 0.7rem;
+            color: #a1a1aa;
+        }
+    }
+}
+
+// CENTRE : Canvas
+.center-canvas {
+    position: relative;
+    background-color: $bg-dark;
+    // Grille
+    background-image:
+        linear-gradient(#27272a 1px, transparent 1px),
+        linear-gradient(90deg, #27272a 1px, transparent 1px);
+    background-size: 40px 40px;
+}
+
+.viewport {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 80px; // Place pour la barre
+
+    .image-wrapper {
+        // background: white;
+        padding: 1rem;
+        border-radius: 4px;
+        box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+        max-width: 90%;
+        max-height: 80%;
+
+        // Force l'image à ne pas dépasser
+        ::ng-deep img {
+            max-width: 100%;
+            max-height: 70vh;
+            object-fit: contain;
+        }
+    }
+
+    .state-msg {
+        text-align: center;
+        color: #71717a;
+
+        h2 {
+            color: #e4e4e7;
+        }
+    }
+}
+
+// BARRE FLOTTANTE
+.command-bar-container {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    z-index: 100; // Au dessus de tout
+}
+
+.floating-bar {
+    width: 600px;
+    background: rgba(24, 24, 27, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid #3f3f46;
+    border-radius: 50px;
+    padding: 8px 16px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+
+    input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 1rem;
+        outline: none;
+        padding-right: 10px;
+    }
+}
+
+// DROITE : Inspecteur
+.inspector-section {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    &.half-height {
+        flex: 1; // Chacun prend 50% de l'espace dispo
+        border-bottom: 1px solid $border;
+    }
+}
+
+textarea {
+    flex: 1;
+    background: #101010;
+    color: #a3e635; // Vert "Matrix" pour le code
+    border: none;
+    padding: 10px;
+    resize: none;
+    font-family: 'Consolas', monospace;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.json-viewer {
+    flex: 1;
+    overflow: auto; // Le scroll se fait ICI
+    background: #101010;
+    padding: 10px;
+
+    pre {
+        margin: 0;
+        font-family: 'Consolas', monospace;
+        font-size: 0.8rem;
+        color: #fbbf24; // Jaune pour le JSON
+    }
+}
+
+.placeholder-center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #52525b;
+    font-style: italic;
+}
+
+// FIX SPLITTER PRIMENG
+:host ::ng-deep {
+    .p-splitter {
+        border: none !important;
+    }
+
+    .p-splitter-gutter {
+        background: $bg-dark !important;
+        width: 4px !important;
+    }
+
+    .p-splitter-gutter-handle {
+        display: none !important;
+    }
+}
