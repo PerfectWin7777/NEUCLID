@@ -47,7 +47,9 @@ class RouterService:
             "1. Analyze the user's intent carefully.\n"
             "2. Select the tool_name that best fits.\n"
             "3. If the request is ambiguous, choose the most likely one based on keywords.\n"
-            "4. Return a JSON object matching the RouterDecision schema."
+            "4. If the prompt is short or vague (e.g. 'Triangle ABC'), assume it is a request to DRAW or CONSTRUCT.\n"
+            "5. 'Triangle', 'Circle', 'Line', 'Angle' -> ALWAYS route to 'geometry_2d'.\n"
+            "6. Return a JSON object matching the RouterDecision schema."
         )
 
         # 3. Call LLM

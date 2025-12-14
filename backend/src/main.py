@@ -11,6 +11,8 @@ from src.firebase_setup import initialize_firebase
 from src.core.startup import register_application_tools
 
 from src.api.v1 import generation
+from src.api.v1 import compilation
+
 
 # Configure logging
 logging.basicConfig(
@@ -70,6 +72,7 @@ app.mount("/static", StaticFiles(directory=settings.TEMP_BUILD_DIR), name="stati
 
 # --- Include Routers ---
 app.include_router(generation.router, prefix=settings.API_V1_STR)
+app.include_router(compilation.router, prefix=settings.API_V1_STR)
 
 
 
@@ -85,6 +88,18 @@ async def root():
         "project": settings.PROJECT_NAME,
         "tools_loaded": True
     }
+
+
+# ============== BLOC DE DÉBOGAGE À AJOUTER TEMPORAIREMENT ==============
+from fastapi.routing import APIRoute
+
+# On imprime toutes les routes connues par l'application au démarrage
+print("--- DÉBUT DES ROUTES ENREGISTRÉES ---")
+for route in app.routes:
+    if isinstance(route, APIRoute):
+        print(f"Path: {route.path} | Methods: {route.methods}")
+print("--- FIN DES ROUTES ENREGISTRÉES ---")
+# =========================================================================
 
 if __name__ == "__main__":
     import uvicorn

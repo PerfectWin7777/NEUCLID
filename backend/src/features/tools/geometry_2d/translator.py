@@ -1367,6 +1367,28 @@ Nous pourrions ajouter à notre objet Style dans geometry2D_models.py un champ :
 Notre traducteur ajouterait alors add = 0.2 and 0.2 aux options, ce qui permettrait de contrôler 
 précisément la longueur "visuelle" des droites. Pour l'instant, gardons cela en tête comme une amélioration future.
 """
+
+
+# --- LE PRÉAMBULE SPÉCIFIQUE À LA GÉOMÉTRIE ---
+GEOMETRY_PREAMBLE = r"""
+\documentclass[preview, border=1mm]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathmorphing, arrows.meta, positioning, calc, decorations.markings, svg.path, shapes.geometric, quotes}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usepackage{tkz-base}
+\usepackage{tkz-euclide}
+\begin{document}
+"""
+
+GEOMETRY_POSTAMBLE = r"""
+\end{document}
+"""
+
 # ==============================================================================
 #                      LA FONCTION PUBLIQUE DE L'OUTIL
 # ==============================================================================
@@ -1387,13 +1409,16 @@ def generate_geometry_2d(
     
     try:
         translator = TkzEuclideTranslator(input_data, show_axes=show_axes, show_grid=show_grid)
-        latex_code = translator.translate()
+        body_code = translator.translate()
         log.info("Traduction en code LaTeX (tkz-euclide) réussie.")
-        log.debug(f"Code LaTeX généré : \n{latex_code}")
+        log.debug(f"Code LaTeX généré : \n{body_code}")
+
+        # on construit le fichier entier maintenant.
+        full_source_code = GEOMETRY_PREAMBLE + body_code + GEOMETRY_POSTAMBLE
         
-        image_path = compile_latex_to_image(latex_code)
+        image_path = compile_latex_to_image(full_source_code)
         log.info(f"Compilation LaTeX réussie. Image : {image_path}")
-        return image_path, latex_code 
+        return image_path, full_source_code 
         
     except Exception as e:
         log.error(f"Échec dans le workflow de l'outil de géométrie : {e}", exc_info=True)

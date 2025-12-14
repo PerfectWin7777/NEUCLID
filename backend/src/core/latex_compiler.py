@@ -10,29 +10,32 @@ from src.config import settings
 log = logging.getLogger(__name__)
 
 # Standard preamble for scientific drawing
-LATEX_PREAMBLE = r"""
-\documentclass[preview, border=1mm]{standalone}
-\usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{tikz}
-\usetikzlibrary{decorations.pathmorphing, arrows.meta, positioning, calc, decorations.markings, svg.path, shapes.geometric, quotes}
-\usepackage{pgfplots}
-\pgfplotsset{compat=1.17}
-\usepackage{tkz-base}
-\usepackage{tkz-euclide}
-\begin{document}
-"""
+# LATEX_PREAMBLE = r"""
+# \documentclass[preview, border=1mm]{standalone}
+# \usepackage[utf8]{inputenc}
+# \usepackage[T1]{fontenc}
+# \usepackage{amsmath}
+# \usepackage{amssymb}
+# \usepackage{tikz}
+# \usetikzlibrary{decorations.pathmorphing, arrows.meta, positioning, calc, decorations.markings, svg.path, shapes.geometric, quotes}
+# \usepackage{pgfplots}
+# \pgfplotsset{compat=1.17}
+# \usepackage{tkz-base}
+# \usepackage{tkz-euclide}
+# \begin{document}
+# """
 
-LATEX_POSTAMBLE = r"""
-\end{document}
-"""
+# LATEX_POSTAMBLE = r"""
+# \end{document}
+# """
 
-def compile_latex_to_image(latex_code: str, output_format: str = "png", dpi: int = 300) -> Path:
+def compile_latex_to_image(full_latex_code: str, output_format: str = "png", dpi: int = 300) -> Path:
     """
     Compiles LaTeX code to an image (PNG).
     Pipeline: LaTeX Code -> .tex -> .pdf (via lualatex) -> .png (via pypdfium2).
+    Compile un code LaTeX COMPLET (incluant \documentclass et \begin{document}) en image.
+    Ce compilateur est 'agnostique' : il ne sait pas si c'est de la géo ou de la chimie.
+    Il exécute juste ce qu'on lui donne.
     """
     # 1. Setup paths using our centralized settings
     build_dir = settings.TEMP_BUILD_DIR
@@ -44,8 +47,7 @@ def compile_latex_to_image(latex_code: str, output_format: str = "png", dpi: int
     final_image_path = build_dir / f"{filename}.{output_format}"
 
     # 2. Write .tex file
-    full_document = LATEX_PREAMBLE + latex_code + LATEX_POSTAMBLE
-    source_file.write_text(full_document, encoding='utf-8')
+    source_file.write_text(full_latex_code, encoding='utf-8')
 
     # 3. Compile to PDF using lualatex
     compile_cmd = [
