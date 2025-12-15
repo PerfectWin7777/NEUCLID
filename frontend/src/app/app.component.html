@@ -2,12 +2,28 @@
 
     <!-- HEADER -->
     <header class="top-bar">
-        <div class="logo">📐 Neuclid <span class="badge">v2.0</span></div>
+        <!-- GAUCHE -->
+        <div class="flex items-center gap-3">
+            <button pButton icon="pi pi-align-left" [text]="true" [rounded]="true" (click)="toggleLeftPanel()"
+                pTooltip="Historique" tooltipPosition="bottom" [class.text-neuclid-accent]="panelSizes()[0] > 0"
+                class="text-gray-400 hover:text-white transition-colors">
+            </button>
+            <div class="logo">📐 Neuclid <span class="badge">v2.0</span></div>
+        </div>
+    
+        <!-- DROITE -->
+        <div class="flex items-center gap-3">
+            <button pButton icon="pi pi-align-right" [text]="true" [rounded]="true" (click)="toggleRightPanel()"
+                pTooltip="Inspecteur" tooltipPosition="bottom" [class.text-neuclid-accent]="panelSizes()[2] > 0"
+                class="text-gray-400 hover:text-white transition-colors">
+            </button>
+        </div>
     </header>
 
     <!-- WORKSPACE -->
     <div class="workspace">
-        <p-splitter [style]="{'height': '100%'}" [panelSizes]="[20, 50, 30]">
+        <!-- ICI : On lie [panelSizes] au signal panelSizes() -->
+        <p-splitter [style]="{'height': '100%'}" [panelSizes]="panelSizes()" [minSizes]="[0, 0, 0]">
 
             <!-- 1. GAUCHE : HISTORIQUE -->
             <ng-template pTemplate>
@@ -31,29 +47,14 @@
             <!-- 2. CENTRE : CANVAS -->
             <ng-template pTemplate>
                 <div class="panel center-canvas">
+            
+                    <!-- NOTRE NOUVEAU COMPOSANT INTELLIGENT -->
+                    <!-- On lui passe l'historique complet pour la grille (items) -->
+                    <!-- On lui passe l'état de chargement -->
+                    <app-smart-canvas [items]="appService.history()" [isLoading]="appService.isLoading()"
+                        (selectItem)="appService.selectItem($event)">
+                    </app-smart-canvas>
 
-                    <!-- ZONE D'AFFICHAGE (Image ou Vide) -->
-                    <div class="viewport">
-                        @if (appService.isLoading()) {
-                        <div class="state-msg">
-                            <i class="pi pi-spin pi-spinner" style="font-size: 3rem; color: #3b82f6"></i>
-                            <p>Génération en cours...</p>
-                        </div>
-                        }
-                        @else if (appService.currentSelection(); as current) {
-                        <div class="image-wrapper">
-                            <!-- On ajoute une ombre et une bordure blanche pour bien la voir -->
-                            <p-image [src]="current.image_url" alt="Resultat" [preview]="true" width="100%">
-                            </p-image>
-                        </div>
-                        }
-                        @else {
-                        <div class="state-msg">
-                            <h2>L'établi est vide</h2>
-                            <p>Utilisez la barre ci-dessous pour commencer.</p>
-                        </div>
-                        }
-                    </div>
 
                     <!-- BARRE FLOTTANTE (Toujours visible maintenant) -->
                     <div class="command-bar-container">
@@ -74,24 +75,46 @@
             <ng-template pTemplate>
                 <div class="panel sidebar-right">
                     @if (appService.currentSelection(); as current) {
-
-                    <!-- Section Code LaTeX (50% hauteur) -->
-                    <div class="inspector-section half-height">
-                        <h3>Code LaTeX</h3>
-                        <textarea readonly>{{ current.latex_code }}</textarea>
-                    </div>
-
-                    <!-- Section JSON (50% hauteur) -->
-                    <div class="inspector-section half-height">
-                        <h3>Structure JSON</h3>
-                        <div class="json-viewer">
-                            <pre>{{ current.json_content | json }}</pre>
-                        </div>
-                    </div>
-
+            
+                    <!-- TAB VIEW (Les Onglets) -->
+                    <p-tabView styleClass="h-full flex flex-col">
+            
+                        <!-- ONGLET 1 : CODE EDITOR (Prioritaire) -->
+                        <p-tabPanel>
+                            <ng-template pTemplate="header">
+                                <div class="flex items-center gap-2">
+                                    <i class="pi pi-code"></i>
+                                    <span>LaTeX</span>
+                                </div>
+                            </ng-template>
+            
+                            <!-- Conteneur 100% Hauteur -->
+                            <div class="h-full flex flex-col">
+                                <app-code-editor [code]="current.latex_code" [isCompiling]="appService.isLoading()"
+                                    (onRecompile)="onManualCompile($event)" (onRequestFix)="onFixWithAi($event)">
+                                </app-code-editor>
+                            </div>
+                        </p-tabPanel>
+            
+                        <!-- ONGLET 2 : JSON (Secondaire) -->
+                        <p-tabPanel>
+                            <ng-template pTemplate="header">
+                                <div class="flex items-center gap-2">
+                                    <i class="pi pi-database"></i>
+                                    <span>Données</span>
+                                </div>
+                            </ng-template>
+            
+                            <div class="json-viewer h-full overflow-auto p-4 bg-[#101010]">
+                                <pre class="text-xs text-yellow-500 font-mono m-0">{{ current.json_content | json }}</pre>
+                            </div>
+                        </p-tabPanel>
+            
+                    </p-tabView>
+            
                     } @else {
-                    <div class="placeholder-center">
-                        <p>Sélectionnez un objet pour voir ses propriétés.</p>
+                    <div class="placeholder-center h-full flex items-center justify-center text-gray-600 italic">
+                        <p>Sélectionnez un objet</p>
                     </div>
                     }
                 </div>
@@ -99,4 +122,5 @@
 
         </p-splitter>
     </div>
+    
 </div>

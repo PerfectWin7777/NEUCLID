@@ -1,4 +1,10 @@
 /* src/styles.scss */
+/* 1. TAILWIND (Le moteur) */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 2. PRIMENG (Les composants) */
 @import "primeng/resources/themes/aura-dark-blue/theme.css";
 @import "primeng/resources/primeng.css";
 @import "primeicons/primeicons.css";

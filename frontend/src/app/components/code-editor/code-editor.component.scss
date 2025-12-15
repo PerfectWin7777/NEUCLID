@@ -1,0 +1,19 @@
+:host {
+    display: block;
+    height: 100%;
+    /* CRUCIAL : Dit au composant de remplir l'onglet */
+    overflow: hidden;
+    /* Empêche le composant de dépasser */
+}
+
+/* Force CodeMirror à remplir le conteneur */
+:host ::ng-deep .cm-editor {
+    height: 100%;
+    font-size: 14px;
+}
+
+:host ::ng-deep .cm-scroller {
+    overflow: auto;
+    /* C'est CodeMirror qui gère le scroll, pas le body */
+    font-family: 'Consolas', 'Monaco', monospace;
+}

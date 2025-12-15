@@ -1,0 +1,54 @@
+<div class="flex flex-col h-full bg-[#1e1e1e] border-l border-neuclid-border">
+
+    <!-- TOOLBAR (Header) -->
+    <div class="h-12 flex items-center justify-between px-3 bg-[#252526] border-b border-neuclid-border select-none">
+
+        <!-- Titre / Infos -->
+        <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
+            <i class="pi pi-code text-neuclid-accent"></i>
+            <span>LaTeX Source</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex items-center gap-1">
+
+            <!-- Fix with AI (Le bouton Magique) -->
+            <button (click)="triggerFixAi()" pTooltip="Réparer avec l'IA (Bientôt)" tooltipPosition="bottom"
+                class="h-8 px-3 rounded text-xs font-bold text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center gap-2 mr-2">
+                <i class="pi pi-sparkles"></i>
+                <span>Fix AI</span>
+            </button>
+
+            <!-- Download -->
+            <button (click)="downloadCode()" pTooltip="Télécharger .tex" tooltipPosition="bottom"
+                class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
+                <i class="pi pi-download"></i>
+            </button>
+
+            <!-- Copy -->
+            <button (click)="copyCode()" [pTooltip]="isCopied ? 'Copié !' : 'Copier'" tooltipPosition="bottom"
+                class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
+                <i [class]="isCopied ? 'pi pi-check text-green-500' : 'pi pi-copy'"></i>
+            </button>
+
+            <!-- Separator -->
+            <div class="w-px h-4 bg-gray-600 mx-2"></div>
+
+            <!-- RECOMPILE (Le bouton principal) -->
+            <button (click)="triggerCompile()" [disabled]="isCompiling" pTooltip="Recompiler (Ctrl+Enter)"
+                tooltipPosition="left"
+                class="h-8 px-3 bg-green-700 hover:bg-green-600 text-white rounded text-xs font-bold flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                @if (isCompiling) {
+                <i class="pi pi-spin pi-spinner"></i>
+                } @else {
+                <i class="pi pi-play" style="font-size: 0.8rem"></i>
+                }
+                <span>RUN</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ZONE EDITEUR (CodeMirror s'injecte ici) -->
+    <!-- On force flex-1 pour qu'il prenne toute la hauteur restante -->
+    <div #editorContainer class="flex-1 overflow-hidden relative text-sm"></div>
+</div>

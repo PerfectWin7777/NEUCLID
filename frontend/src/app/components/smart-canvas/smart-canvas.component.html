@@ -1,0 +1,89 @@
+<div class="relative w-full h-full overflow-hidden select-none" (wheel)="onWheel($event)"
+    (mousedown)="startPan($event)" (mousemove)="doPan($event)" (mouseup)="endPan()" (mouseleave)="endPan()">
+
+    <!-- LAYER DE TRANSFORMATION (C'est lui qui bouge/zoom) -->
+    <div #transformLayer
+        class="w-full h-full flex items-center justify-center origin-top-left transition-transform duration-75 ease-linear">
+
+        <!-- MODE GRILLE (Choix) -->
+        @if (mode() === 'GRID' && !isLoading) {
+        <div class="grid grid-cols-2 gap-4 p-10 max-w-4xl">
+            @for (item of items; track item) {
+            <div class="group relative aspect-square bg-white rounded-lg shadow-2xl overflow-hidden cursor-pointer border border-neuclid-border hover:border-neuclid-accent transition-all hover:scale-105"
+                (click)="enterDetailMode(item)">
+
+                <!-- L'image -->
+                <img [src]="item.image_url" class="w-full h-full object-contain p-4">
+
+                <!-- Overlay au survol -->
+                <div
+                    class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center text-white">
+                    <span class="font-bold text-lg">Ouvrir</span>
+                    <span class="text-xs text-gray-300">Click to inspect</span>
+                </div>
+            </div>
+            }
+        </div>
+        }
+
+        <!-- MODE DÉTAIL (Zoom) -->
+        @if (mode() === 'DETAIL' && selectedImage()) {
+        <div class="relative shadow-2xl bg-white p-1 rounded">
+            <!-- L'image HD -->
+            <img [src]="selectedImage()?.image_url" class="pointer-events-none max-w-[80vw]">
+        </div>
+        }
+
+        <!-- LOADING STATE -->
+        @if (isLoading) {
+        <div class="flex flex-col items-center justify-center text-neuclid-accent animate-pulse">
+            <i class="pi pi-spin pi-spinner text-4xl mb-4"></i>
+            <p>Neuclid génère vos variantes...</p>
+        </div>
+        }
+    </div>
+
+    <!-- HUD (Contrôles flottants en bas à droite) -->
+    <!-- N'apparaît qu'en mode détail -->
+    @if (mode() === 'DETAIL') {
+    <!-- On le place en HAUT à DROITE (top-4 right-4) pour ne pas gêner la barre de prompt -->
+    <div class="absolute top-4 right-4 flex flex-col gap-2 z-50">
+    
+        <!-- Groupe Navigation -->
+        <div class="flex gap-2">
+            <button (click)="backToGrid()"
+                class="bg-neuclid-ui/90 hover:bg-neuclid-accent text-white px-4 py-2 rounded shadow-lg border border-neuclid-border transition-all flex items-center gap-2 font-bold text-sm">
+                <i class="pi pi-th-large"></i> <!-- Icône Grille -->
+                <span>Grille</span>
+            </button>
+        </div>
+    
+        <!-- Groupe Zoom -->
+        <div
+            class="bg-neuclid-ui/90 backdrop-blur border border-neuclid-border rounded shadow-lg flex flex-col items-center overflow-hidden mt-2">
+            <button (click)="scale = scale * 1.1; updateTransform()" class="p-2 text-white hover:bg-white/10 w-full">
+                <i class="pi pi-plus"></i>
+            </button>
+    
+            <div class="h-px w-4 bg-gray-600"></div>
+    
+            <span class="py-1 text-xs text-neuclid-accent font-mono font-bold">
+                {{ (scale * 100) | number:'1.0-0' }}%
+            </span>
+    
+            <div class="h-px w-4 bg-gray-600"></div>
+    
+            <button (click)="scale = scale * 0.9; updateTransform()" class="p-2 text-white hover:bg-white/10 w-full">
+                <i class="pi pi-minus"></i>
+            </button>
+    
+            <div class="h-px w-4 bg-gray-600"></div>
+    
+            <button (click)="resetView()" class="p-2 text-white hover:bg-white/10 w-full" title="Recentrer">
+                <i class="pi pi-expand"></i>
+            </button>
+        </div>
+    
+    </div>
+    }
+</div>

@@ -48,6 +48,35 @@ export class AppService {
             })
         );
     }
+    
+    // méthode pour la compilation manuelle
+    compileManual(latexCode: string) {
+        this.isLoading.set(true);
+
+        const payload = { latex_code: latexCode };
+        const compileUrl = 'http://localhost:8000/api/v1/compile'; // La route backend qu'on a créée
+
+        return this.http.post<any>(compileUrl, payload).pipe(
+            tap((response) => {
+                // La réponse contient { image_url: '...' }
+                // On doit mettre à jour l'élément actuel avec la nouvelle image
+                const current = this.currentSelection();
+
+                if (current) {
+                    // On crée une copie mise à jour (Immutabilité pour les Signals)
+                    const updated = { ...current, image_url: response.image_url, latex_code: latexCode };
+
+                    // On met à jour la sélection ET l'historique
+                    this.currentSelection.set(updated);
+
+                    // (Optionnel) Mise à jour dans l'historique aussi pour garder la cohérence
+                    this.history.update(list => list.map(item => item === current ? updated : item));
+                }
+
+                this.isLoading.set(false);
+            })
+        );
+    }
 
     // Action pour sélectionner une image dans l'historique
     selectItem(item: GenerationResult) {
