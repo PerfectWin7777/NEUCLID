@@ -10,7 +10,8 @@
 @import "primeicons/primeicons.css";
 
 html,
-body {
+body,
+app-root {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -24,4 +25,71 @@ body {
 /* On force tous les éléments à utiliser une boite logique */
 * {
     box-sizing: border-box;
+}
+
+
+/* LE FIX MAGIQUE : On force le splitter à se comporter comme un Layout Qt */
+.p-splitter {
+    height: 100% !important;
+    border: none !important;
+    background: transparent !important;
+}
+
+/* Par défaut, PrimeNG ou le navigateur peuvent empêcher un panneau de descendre sous une certaine taille. */
+/* On force la taille minimale à 0 pour permettre la fermeture totale. */
+.p-splitter-panel {
+    min-width: 0 !important;
+    /* CRUCIAL pour la largeur */
+    min-height: 0 !important;
+    /* CRUCIAL pour la hauteur */
+    overflow: hidden !important;
+    /* On s'assure que le panneau central prend bien 100% quand il reste seul */
+    transition: flex 0.1s ease;
+}
+
+/* Esthétique de la poignée de redimensionnement */
+.p-splitter-gutter {
+    background-color: #09090b !important;
+    width: 6px !important;
+    z-index: 50;
+    /* Au dessus du reste */
+    transition: background-color 0.2s;
+}
+
+.p-splitter-gutter:hover {
+    background-color: #3b82f6 !important;
+    /* Bleu au survol */
+}
+
+
+/* --- FIX RADICAL POUR SPLITTER (Méthode hide() comme PyQt) --- */
+
+/* Structure du DOM PrimeNG Splitter :
+   Enfant 1 : Panneau Gauche
+   Enfant 2 : Poignée Gauche
+   Enfant 3 : Panneau Centre
+   Enfant 4 : Poignée Droite
+   Enfant 5 : Panneau Droite
+*/
+
+/* Quand on a la classe 'force-hide-left' sur le splitter... */
+.force-hide-left .p-splitter-panel:nth-child(1),
+/* Le panneau gauche */
+.force-hide-left .p-splitter-gutter:nth-child(2)
+
+/* La poignée gauche */
+    {
+    display: none !important;
+    /* Disparais complètement ! */
+}
+
+/* Quand on a la classe 'force-hide-right' sur le splitter... */
+.force-hide-right .p-splitter-gutter:nth-child(4),
+/* La poignée droite */
+.force-hide-right .p-splitter-panel:nth-child(5)
+
+/* Le panneau droite */
+    {
+    display: none !important;
+    /* Disparais complètement ! */
 }

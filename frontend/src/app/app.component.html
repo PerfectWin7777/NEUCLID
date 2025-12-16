@@ -1,126 +1,102 @@
-<div class="main-layout">
+<div class="flex flex-col h-screen w-screen bg-[#09090b] text-gray-200 overflow-hidden">
 
     <!-- HEADER -->
-    <header class="top-bar">
-        <!-- GAUCHE -->
-        <div class="flex items-center gap-3">
-            <button pButton icon="pi pi-align-left" [text]="true" [rounded]="true" (click)="toggleLeftPanel()"
-                pTooltip="Historique" tooltipPosition="bottom" [class.text-neuclid-accent]="panelSizes()[0] > 0"
-                class="text-gray-400 hover:text-white transition-colors">
+    <header class="h-12 flex-none flex items-center justify-between px-4 bg-[#18181b] border-b border-[#27272a] z-50">
+        <div class="flex items-center gap-4">
+            <button pButton (click)="toggleLeftPanel()" [text]="true" [rounded]="true"
+                class="!w-8 !h-8 !p-0 !text-gray-400 hover:!text-white">
+                <i [class]="isLeftVisible ? 'pi pi-align-justify' : 'pi pi-arrow-right'"></i>
             </button>
-            <div class="logo">📐 Neuclid <span class="badge">v2.0</span></div>
+            <span class="font-bold text-lg">📐 Neuclid <span
+                    class="text-xs bg-blue-900 px-1 rounded ml-1">v2.0</span></span>
         </div>
-    
-        <!-- DROITE -->
-        <div class="flex items-center gap-3">
-            <button pButton icon="pi pi-align-right" [text]="true" [rounded]="true" (click)="toggleRightPanel()"
-                pTooltip="Inspecteur" tooltipPosition="bottom" [class.text-neuclid-accent]="panelSizes()[2] > 0"
-                class="text-gray-400 hover:text-white transition-colors">
+        <div class="flex items-center gap-4">
+            <button pButton (click)="toggleRightPanel()" [text]="true" [rounded]="true"
+                class="!w-8 !h-8 !p-0 !text-gray-400 hover:!text-white">
+                <i [class]="isRightVisible ? 'pi pi-align-right' : 'pi pi-arrow-left'"></i>
             </button>
         </div>
     </header>
 
     <!-- WORKSPACE -->
-    <div class="workspace">
-        <!-- ICI : On lie [panelSizes] au signal panelSizes() -->
-        <p-splitter [style]="{'height': '100%'}" [panelSizes]="panelSizes()" [minSizes]="[0, 0, 0]">
+    <div class="flex-1 w-full h-full relative overflow-hidden">
 
-            <!-- 1. GAUCHE : HISTORIQUE -->
+        <p-splitter [style]="{'height': '100%', 'border': 'none'}" [panelSizes]="panelSizes()" [minSizes]="[0, 0, 0]"
+            [gutterSize]="4" (onResizeEnd)="onSplitterResize($event)"
+            [styleClass]="(isLeftVisible ? '' : 'force-hide-left ') + (isRightVisible ? '' : ' force-hide-right')">
+
+            <!-- GAUCHE -->
             <ng-template pTemplate>
-                <div class="panel sidebar-left">
-                    <h3>Historique</h3>
-                    <div class="scroll-container">
+                <div class="h-full w-full flex flex-col bg-[#18181b] border-r border-[#27272a]"
+                    [style.display]="isLeftVisible ? 'flex' : 'none'">
+                    <div class="p-3 text-xs font-bold text-gray-500 uppercase border-b border-[#27272a]">Historique
+                    </div>
+                    <div class="flex-1 overflow-y-auto p-2">
                         @for (item of appService.history(); track item) {
-                        <div class="history-item" [class.active]="item === appService.currentSelection()"
+                        <div class="p-2 mb-1 rounded hover:bg-white/5 cursor-pointer text-sm text-gray-300"
+                            [class.bg-blue-900_40]="item === appService.currentSelection()"
                             (click)="appService.selectItem(item)">
-                            <i class="pi pi-file" style="font-size: 1.2rem"></i>
-                            <div class="item-info">
-                                <span class="tool-tag">{{ item.tool_name }}</span>
-                                <span class="date">{{ item.timestamp | date:'HH:mm:ss' }}</span>
-                            </div>
+                            {{ item.tool_name }} <span class="text-xs text-gray-500 float-right">{{ item.timestamp |
+                                date:'HH:mm' }}</span>
                         </div>
                         }
                     </div>
                 </div>
             </ng-template>
 
-            <!-- 2. CENTRE : CANVAS -->
+            <!-- CENTRE (CANVAS) -->
             <ng-template pTemplate>
-                <div class="panel center-canvas">
-            
-                    <!-- NOTRE NOUVEAU COMPOSANT INTELLIGENT -->
-                    <!-- On lui passe l'historique complet pour la grille (items) -->
-                    <!-- On lui passe l'état de chargement -->
-                    <app-smart-canvas [items]="appService.history()" [isLoading]="appService.isLoading()"
-                        (selectItem)="appService.selectItem($event)">
-                    </app-smart-canvas>
-
-
-                    <!-- BARRE FLOTTANTE (Toujours visible maintenant) -->
-                    <div class="command-bar-container">
-                        <div class="floating-bar">
-                            <input type="text" pInputText [(ngModel)]="userPrompt" (keydown.enter)="onGenerate()"
-                                placeholder="Décrivez votre figure... (ex: Triangle ABC rouge)"
-                                [disabled]="appService.isLoading()">
-
-                            <p-button icon="pi pi-arrow-right" [rounded]="true" [text]="true" (onClick)="onGenerate()"
-                                [loading]="appService.isLoading()"></p-button>
-                        </div>
+                <div class="h-full w-full relative flex flex-col bg-[#09090b]">
+                    <!-- CANVAS prend toute la place -->
+                    <div class="flex-1 relative w-full h-full overflow-hidden">
+                        <app-smart-canvas [items]="appService.history()"  [isLoading]="appService.isLoading()"
+                            (selectItem)="appService.selectItem($event)">
+                        </app-smart-canvas>
                     </div>
 
+                    <!-- INPUT FLOTTANT -->
+                    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 w-[600px] z-50">
+                        <div
+                            class="bg-[#18181b]/90 backdrop-blur border border-[#3f3f46] rounded-full p-1 pl-4 flex items-center shadow-2xl">
+                            <input type="text" [(ngModel)]="userPrompt" (keydown.enter)="onGenerate()"
+                                placeholder="Décrivez votre figure..."
+                                class="flex-1 bg-transparent border-none outline-none text-white h-10">
+                            <button pButton icon="pi pi-arrow-up" (click)="onGenerate()" [rounded]="true"
+                                class="ml-2"></button>
+                        </div>
+                    </div>
                 </div>
             </ng-template>
 
-            <!-- 3. DROITE : INSPECTEUR -->
+            <!-- DROITE -->
             <ng-template pTemplate>
-                <div class="panel sidebar-right">
-                    @if (appService.currentSelection(); as current) {
-            
-                    <!-- TAB VIEW (Les Onglets) -->
-                    <p-tabView styleClass="h-full flex flex-col">
-            
-                        <!-- ONGLET 1 : CODE EDITOR (Prioritaire) -->
+                <div class="h-full w-full flex flex-col bg-[#18181b] border-l border-[#27272a]"
+                    [style.display]="isRightVisible ? 'flex' : 'none'">
+                    <p-tabView>
+                        <p-tabPanel header="Code" leftIcon="pi pi-code">
+                            <app-code-editor *ngIf="appService.currentSelection() as curr"
+                                [code]="curr.latex_code"></app-code-editor>
+                        </p-tabPanel>
+                        <!-- ONGLET 2 : DONNÉES STRUCTURÉES -->
                         <p-tabPanel>
                             <ng-template pTemplate="header">
                                 <div class="flex items-center gap-2">
-                                    <i class="pi pi-code"></i>
-                                    <span>LaTeX</span>
+                                    <i class="pi pi-list"></i> <!-- J'ai changé l'icone pour une liste -->
+                                    <span>Construction</span> <!-- J'ai renommé pour faire plus pro -->
                                 </div>
                             </ng-template>
-            
-                            <!-- Conteneur 100% Hauteur -->
-                            <div class="h-full flex flex-col">
-                                <app-code-editor [code]="current.latex_code" [isCompiling]="appService.isLoading()"
-                                    (onRecompile)="onManualCompile($event)" (onRequestFix)="onFixWithAi($event)">
-                                </app-code-editor>
+                        
+                            <!-- ON REMPLACE LE JSON VIEWER PAR TON NOUVEAU COMPOSANT -->
+                            <!-- On lui passe 'current.json_content' qui contient les données brutes -->
+                            <div class="h-full overflow-hidden">
+                                <app-construction-tree [data]="appService.currentSelection()?.json_content"></app-construction-tree>
                             </div>
+                        
                         </p-tabPanel>
-            
-                        <!-- ONGLET 2 : JSON (Secondaire) -->
-                        <p-tabPanel>
-                            <ng-template pTemplate="header">
-                                <div class="flex items-center gap-2">
-                                    <i class="pi pi-database"></i>
-                                    <span>Données</span>
-                                </div>
-                            </ng-template>
-            
-                            <div class="json-viewer h-full overflow-auto p-4 bg-[#101010]">
-                                <pre class="text-xs text-yellow-500 font-mono m-0">{{ current.json_content | json }}</pre>
-                            </div>
-                        </p-tabPanel>
-            
                     </p-tabView>
-            
-                    } @else {
-                    <div class="placeholder-center h-full flex items-center justify-center text-gray-600 italic">
-                        <p>Sélectionnez un objet</p>
-                    </div>
-                    }
                 </div>
             </ng-template>
 
         </p-splitter>
     </div>
-    
 </div>

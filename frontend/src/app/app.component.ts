@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common'; // Important pour les directives
 import { FormsModule } from '@angular/forms';
 import { SmartCanvasComponent } from './components/smart-canvas/smart-canvas.component';
 import { CodeEditorComponent } from './components/code-editor/code-editor.component';
+import { ConstructionTreeComponent } from './components/construction-tree/construction-tree.component';
 
 // PrimeNG Imports
 import { ButtonModule } from 'primeng/button';
@@ -29,7 +30,8 @@ import { AppService } from './core/services/app.service';
         ImageModule,
         TabViewModule,
         SmartCanvasComponent,
-        CodeEditorComponent
+        CodeEditorComponent,
+        ConstructionTreeComponent
         
     ],
     templateUrl: './app.component.html',
@@ -42,41 +44,71 @@ export class AppComponent {
     // Variable pour l'input (liée avec ngModel)
     userPrompt = '';
 
-    // --- GESTION DES PANNEAUX ---
-    // Taille par défaut : [Gauche(20), Centre(50), Droite(30)]
-    panelSizes = signal<number[]>([20, 50, 30]);
+    // État initial
+    panelSizes = signal<number[]>([20, 60, 20]);
 
-    // Pour se souvenir de la taille avant fermeture
-    lastLeftSize = 20;
-    lastRightSize = 30;
+    // Mémoire
+    lastLeft = 20;
+    lastRight = 20;
+
+    get isLeftVisible() { return this.panelSizes()[0] > 0.5; }
+    get isRightVisible() { return this.panelSizes()[2] > 0.5; }
 
     toggleLeftPanel() {
         const current = this.panelSizes();
-        // Si la taille est > 1 (marge d'erreur), on considère ouvert
-        if (current[0] > 1) {
-            this.lastLeftSize = current[0]; // Sauvegarde
-            // On ferme : [0, centre agrandi, droite inchangée]
-            this.panelSizes.set([0, current[1] + current[0], current[2]]);
+        let newLeft = 0;
+        let newRight = current[2];
+
+        if (this.isLeftVisible) {
+            // ON FERME
+            this.lastLeft = current[0];
+            newLeft = 0;
         } else {
-            // On ouvre : [taille sauvée, centre réduit, droite inchangée]
-            // Sécurité : si la taille sauvée est trop petite (ex: 0), on met 20 par défaut
-            const sizeToRestore = this.lastLeftSize > 5 ? this.lastLeftSize : 20;
-            const newCenter = current[1] - sizeToRestore;
-            this.panelSizes.set([sizeToRestore, newCenter, current[2]]);
+            // ON OUVRE
+            newLeft = this.lastLeft || 20;
+            // Sécurité : si gauche + droite > 90%, on réduit la droite pour laisser de la place
+            if (newLeft + newRight > 90) {
+                newRight = 100 - newLeft - 10; // On laisse 10% au centre mini
+            }
         }
+
+        // LE SECRET EST ICI : Le centre est le reste.
+        const newCenter = 100 - newLeft - newRight;
+        this.panelSizes.set([newLeft, newCenter, newRight]);
     }
 
     toggleRightPanel() {
         const current = this.panelSizes();
-        if (current[2] > 1) {
-            this.lastRightSize = current[2];
-            this.panelSizes.set([current[0], current[1] + current[2], 0]);
+        let newLeft = current[0];
+        let newRight = 0;
+
+        if (this.isRightVisible) {
+            // ON FERME
+            this.lastRight = current[2];
+            newRight = 0;
         } else {
-            const sizeToRestore = this.lastRightSize > 5 ? this.lastRightSize : 30;
-            const newCenter = current[1] - sizeToRestore;
-            this.panelSizes.set([current[0], newCenter, sizeToRestore]);
+            // ON OUVRE
+            newRight = this.lastRight || 20;
+            if (newRight + newLeft > 90) {
+                newLeft = 100 - newRight - 10;
+            }
         }
+
+        // LE SECRET EST ICI
+        const newCenter = 100 - newLeft - newRight;
+        this.panelSizes.set([newLeft, newCenter, newRight]);
     }
+
+    onSplitterResize(event: any) {
+        // Même ici, on force le recalcul pour éviter les décimales foireuses
+        const [l, c, r] = event.sizes;
+        // On ne stocke que si c'est "ouvert" (taille significative)
+        if (l > 1) this.lastLeft = l;
+        if (r > 1) this.lastRight = r;
+
+        this.panelSizes.set(event.sizes);
+    }
+
 
 
     onGenerate() {

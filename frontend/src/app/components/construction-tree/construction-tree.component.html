@@ -1,0 +1,46 @@
+<div class="tree-container">
+
+    <!-- En-tête du composant (Optionnel mais classe) -->
+    <div class="tree-header">
+        <span>Étapes de construction</span>
+        <span class="badge">{{ visualSteps.length }}</span>
+    </div>
+
+    <!-- La liste déroulante -->
+    <!-- flex-1 : prend toute la place dispo -->
+    <!-- min-h-0 : CRUCIAL. Autorise le conteneur à être plus petit que son contenu -->
+    <div class="flex-1 min-h-0 relative">
+    
+        <!-- Le Widget PrimeNG -->
+        <!-- On lui dit : prends 100% de ton parent (le div flex-1) -->
+        <p-scrollPanel [style]="{ width: '100%', height: '100%' }">
+    
+            <div class="p-2"> <!-- Un peu de padding interne -->
+    
+                @for (step of visualSteps; track step.id; let i = $index) {
+                <div class="step-item">
+                    <div class="step-icon-box">
+                        <i [class]="step.icon + ' ' + step.iconColor"></i>
+                    </div>
+                    <div class="step-content">
+                        <div class="step-title">{{ step.title }}</div>
+                        @if (step.subtitle) {
+                        <div class="step-subtitle">{{ step.subtitle }}</div>
+                        }
+                    </div>
+                    <div class="step-status">
+                        <span class="index">#{{ i + 1 }}</span>
+                    </div>
+                </div>
+                } @empty {
+                <div class="empty-state">
+                    <i class="pi pi-inbox"></i>
+                    <p>Aucune donnée</p>
+                </div>
+                }
+    
+            </div>
+    
+        </p-scrollPanel>
+    </div>
+    </div>
