@@ -1,54 +1,68 @@
-<div class="flex flex-col h-full bg-[#1e1e1e] border-l border-neuclid-border">
+<!-- CONTENEUR PRINCIPAL : Flex Vertical qui prend 100% de l'espace -->
+<div class="flex flex-col h-full w-full bg-[#1e1e1e] border-l border-[#3f3f46]">
 
-    <!-- TOOLBAR (Header) -->
-    <div class="h-12 flex items-center justify-between px-3 bg-[#252526] border-b border-neuclid-border select-none">
+    <!-- 1. TOOLBAR (Fixe en haut) -->
+    <div
+        class="flex-none h-10 flex items-center justify-between px-3 bg-[#252526] border-b border-[#3f3f46] select-none">
 
-        <!-- Titre / Infos -->
-        <div class="flex items-center gap-2 text-xs font-bold text-gray-400 uppercase tracking-wider">
-            <i class="pi pi-code text-neuclid-accent"></i>
-            <span>LaTeX Source</span>
+        <!-- Titre / Info Fichier -->
+        <div class="flex items-center gap-2 text-xs font-bold text-[#cccccc]">
+            <i class="pi pi-file-edit text-blue-400"></i>
+            <span>source.tex</span>
         </div>
 
         <!-- Actions -->
         <div class="flex items-center gap-1">
 
-            <!-- Fix with AI (Le bouton Magique) -->
-            <button (click)="triggerFixAi()" pTooltip="Réparer avec l'IA (Bientôt)" tooltipPosition="bottom"
-                class="h-8 px-3 rounded text-xs font-bold text-purple-400 hover:bg-purple-500/10 transition-colors flex items-center gap-2 mr-2">
-                <i class="pi pi-sparkles"></i>
+            <!-- Bouton IA -->
+            <button (click)="triggerFixAi()" pTooltip="Réparer avec l'IA" tooltipPosition="bottom"
+                class="h-7 px-2 rounded text-xs font-medium text-purple-400 hover:bg-purple-500/10 hover:text-purple-300 transition-colors flex items-center gap-1.5 mr-2 border border-transparent hover:border-purple-500/30">
+                <i class="pi pi-sparkles text-[10px]"></i>
                 <span>Fix AI</span>
             </button>
 
-            <!-- Download -->
-            <button (click)="downloadCode()" pTooltip="Télécharger .tex" tooltipPosition="bottom"
-                class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
-                <i class="pi pi-download"></i>
-            </button>
+            <div class="w-px h-4 bg-[#3f3f46] mx-1"></div>
 
-            <!-- Copy -->
+            <!-- Copier -->
             <button (click)="copyCode()" [pTooltip]="isCopied ? 'Copié !' : 'Copier'" tooltipPosition="bottom"
-                class="w-8 h-8 rounded hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-colors">
+                class="w-7 h-7 rounded hover:bg-[#3f3f46] text-[#cccccc] flex items-center justify-center transition-all active:scale-95">
                 <i [class]="isCopied ? 'pi pi-check text-green-500' : 'pi pi-copy'"></i>
             </button>
 
-            <!-- Separator -->
-            <div class="w-px h-4 bg-gray-600 mx-2"></div>
+            <!-- Télécharger -->
+            <button (click)="downloadCode()" pTooltip="Télécharger .tex" tooltipPosition="bottom"
+                class="w-7 h-7 rounded hover:bg-[#3f3f46] text-[#cccccc] flex items-center justify-center transition-all active:scale-95">
+                <i class="pi pi-download"></i>
+            </button>
 
-            <!-- RECOMPILE (Le bouton principal) -->
-            <button (click)="triggerCompile()" [disabled]="isCompiling" pTooltip="Recompiler (Ctrl+Enter)"
-                tooltipPosition="left"
-                class="h-8 px-3 bg-green-700 hover:bg-green-600 text-white rounded text-xs font-bold flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+            <div class="w-px h-4 bg-[#3f3f46] mx-1"></div>
+
+            <!-- RUN (Le gros bouton) -->
+            <button (click)="triggerCompile()" [disabled]="isCompiling"
+                class="h-7 px-3 bg-green-700 hover:bg-green-600 text-white rounded-sm text-xs font-bold flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-green-900/20">
                 @if (isCompiling) {
-                <i class="pi pi-spin pi-spinner"></i>
+                <i class="pi pi-spin pi-spinner text-[10px]"></i>
                 } @else {
-                <i class="pi pi-play" style="font-size: 0.8rem"></i>
+                <i class="pi pi-play text-[10px]"></i>
                 }
                 <span>RUN</span>
             </button>
         </div>
     </div>
 
-    <!-- ZONE EDITEUR (CodeMirror s'injecte ici) -->
-    <!-- On force flex-1 pour qu'il prenne toute la hauteur restante -->
-    <div #editorContainer class="flex-1 overflow-hidden relative text-sm"></div>
+    <!-- 2. ZONE EDITEUR (Prend tout le reste) -->
+    <!-- C'est ici que CodeMirror va s'injecter. On force le overflow hidden pour que CodeMirror gère ses scrollbars -->
+    <div #editorContainer class="flex-1 w-full h-full relative overflow-hidden text-sm"></div>
+
+    <!-- 3. STATUS BAR (Fixe en bas - Optionnel mais classe) -->
+    <div class="flex-none h-6 bg-[#007acc] text-white flex items-center justify-between px-3 text-[10px] select-none">
+        <div class="flex items-center gap-3">
+            <span><i class="pi pi-code mr-1"></i>LaTeX</span>
+            <span>UTF-8</span>
+        </div>
+        <div class="flex items-center gap-3 opacity-90">
+            <span class="hover:bg-white/10 px-1 rounded cursor-pointer">Ln 1, Col 1</span>
+        </div>
+    </div>
+
 </div>

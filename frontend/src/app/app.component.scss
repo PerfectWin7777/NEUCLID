@@ -187,7 +187,7 @@ $accent: #3b82f6; // Bleu
 .inspector-section {
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    // overflow: hidden;
 
     &.half-height {
         flex: 1; // Chacun prend 50% de l'espace dispo
@@ -248,36 +248,33 @@ textarea {
 
 
 /* --- STYLE DES ONGLETS (Tab View Override) --- */
-:host ::ng-deep {
-    .p-tabview {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        overflow: hidden;
-        /* Coupe tout ce qui dépasse */
-    }
+// :host {
+//     display: block;
+//     height: 100vh;
+// }
 
-    .p-tabview-nav {
-        background: #18181b !important;
-        border-bottom: 1px solid #27272a !important;
-        flex-shrink: 0;
-        /* Ne s'écrase jamais */
-    }
+// :host ::ng-deep {
 
-    .p-tabview-panels {
-        flex: 1;
-        /* Prend tout le reste de la hauteur */
-        height: 0;
-        /* ASTUCE FLEXBOX : Force le navigateur à recalculer la hauteur */
-        padding: 0 !important;
-        border: none !important;
-        background: #101010;
-        overflow: hidden;
-        /* Pas de scroll sur le conteneur, c'est l'enfant qui scroll */
-    }
+//     /* On force le TabView à remplir son parent */
+//     .p-tabview {
+//         display: flex;
+//         flex-direction: column;
+//         height: 100%;
+//     }
 
-    .p-tabview-panel {
-        height: 100%;
-        width: 100%;
-    }
-}
+//     /* Le corps des onglets prend tout l'espace restant */
+//     .p-tabview-panels {
+//         flex: 1;
+//         height: 100%;
+//         /* Force la hauteur */
+//         padding: 0;
+//         overflow: hidden;
+//         /* Pas de scroll sur le conteneur, c'est l'enfant qui gère */
+//     }
+
+//     /* L'onglet individuel remplit le corps */
+//     .p-tabview-panel {
+//         height: 100%;
+//         width: 100%;
+//     }
+// }

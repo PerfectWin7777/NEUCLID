@@ -8,7 +8,8 @@ import { ScrollPanelModule } from 'primeng/scrollpanel';
     standalone: true,
     imports: [CommonModule, ScrollPanelModule],
     templateUrl: './construction-tree.component.html',
-    styleUrls: ['./construction-tree.component.scss']
+    styleUrls: ['./construction-tree.component.scss'],
+    host: { 'class': 'block h-full w-full' }
 })
 export class ConstructionTreeComponent implements OnChanges {
 

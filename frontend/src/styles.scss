@@ -16,7 +16,7 @@ app-root {
     padding: 0;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    // overflow: hidden;
     /* Empêche tout scrollbar global moche */
     background-color: #1e1e1e;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -42,7 +42,7 @@ app-root {
     /* CRUCIAL pour la largeur */
     min-height: 0 !important;
     /* CRUCIAL pour la hauteur */
-    overflow: hidden !important;
+    // overflow: hidden !important;
     /* On s'assure que le panneau central prend bien 100% quand il reste seul */
     transition: flex 0.1s ease;
 }
@@ -92,4 +92,73 @@ app-root {
     {
     display: none !important;
     /* Disparais complètement ! */
+}
+
+
+/* --- CUSTOM SCROLLBAR (Pour Chrome, Edge, Safari) --- */
+
+/* La largeur de la barre */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    /* Pour les scrolls horizontaux */
+}
+
+/* Le fond de la barre (le rail) */
+::-webkit-scrollbar-track {
+    background: #18181b;
+    /* Même couleur que tes headers */
+}
+
+/* La poignée (le truc qu'on bouge) */
+::-webkit-scrollbar-thumb {
+    background: #3f3f46;
+    /* Gris moyen (visible) */
+    border-radius: 4px;
+    /* Arrondi */
+}
+
+/* Quand on passe la souris dessus */
+::-webkit-scrollbar-thumb:hover {
+    background: #71717a;
+    /* Plus clair au survol */
+}
+
+/* --- FIX TABVIEW --- */
+/* 1. On s'assure que la racine est pleine hauteur */
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+}
+
+/* 2. On force le composant PrimeNG à prendre toute la hauteur */
+p-tabview,
+.p-tabview {
+    height: 100% !important;
+    /* Le tag ET la classe */
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+/* 3. L'entête ne bouge pas */
+.p-tabview-nav {
+    flex: 0 0 auto !important;
+}
+
+/* 4. Le corps PREND TOUTE LA PLACE (C'est ici la clé) */
+.p-tabview-panels {
+    flex: 1 1 auto !important;
+    height: 100% !important;
+    /* Pas de 0, pas de auto, 100% du parent */
+    padding: 0 !important;
+    overflow: hidden !important;
+    /* Coupe ce qui dépasse pour que l'enfant scrolle */
+}
+
+/* 5. L'onglet lui-même */
+.p-tabview-panel {
+    height: 100% !important;
+    width: 100% !important;
 }

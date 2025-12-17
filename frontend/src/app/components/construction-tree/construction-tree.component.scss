@@ -1,114 +1,122 @@
 /* 1. CRUCIAL : On dit au composant Angular de remplir son parent */
 :host {
+    /* C'est comme dire à ton QWidget : setFixedHeight(parent.height()) */
     display: block;
     height: 100%;
-    overflow: hidden;
-    /* Empêche le composant de dépasser */
+    width: 100%;
+    border: 2px solid red;
+    position: relative;
+        /* Important pour que les enfants 'absolute' se repèrent par rapport à ici */
+    // overflow: hidden;/* Rien ne dépasse du cadre */
+    // box-sizing: border-box;
+        /* Pour que la bordure soit INCLUSE dans la hauteur */
+    
 }
+
 
 /* Conteneur principal */
-.tree-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    background-color: #101010;
-    color: #e4e4e7;
-    font-family: 'Segoe UI', sans-serif;
-}
+// .tree-container {
+//     display: flex;
+//     flex-direction: column;
+//     height: 100%;
+//     background-color: #101010;
+//     color: #e4e4e7;
+//     font-family: 'Segoe UI', sans-serif;
+// }
 
-.tree-header {
-    /* Empêche le header de rétrécir */
-    flex-shrink: 0;
-    padding: 10px 15px;
-    border-bottom: 1px solid #27272a;
-    font-size: 0.75rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    color: #71717a;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+// .tree-header {
+//     /* Empêche le header de rétrécir */
+//     flex-shrink: 0;
+//     padding: 10px 15px;
+//     border-bottom: 1px solid #27272a;
+//     font-size: 0.75rem;
+//     font-weight: bold;
+//     text-transform: uppercase;
+//     color: #71717a;
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
 
-    .badge {
-        background: #27272a;
-        padding: 2px 6px;
-        border-radius: 4px;
-        color: white;
-    }
-}
+//     .badge {
+//         background: #27272a;
+//         padding: 2px 6px;
+//         border-radius: 4px;
+//         color: white;
+//     }
+// }
 
 
-/* LA LIGNE (Item) */
-.step-item {
-    display: flex;
-    align-items: center;
-    padding: 8px 12px;
-    border-bottom: 1px solid #18181b;
-    cursor: pointer;
-    transition: background 0.2s;
-    border-radius: 4px;
-    /* Un peu plus joli */
-    margin-bottom: 2px;
+// /* LA LIGNE (Item) */
+// .step-item {
+//     display: flex;
+//     align-items: center;
+//     padding: 8px 12px;
+//     border-bottom: 1px solid #18181b;
+//     cursor: pointer;
+//     transition: background 0.2s;
+//     border-radius: 4px;
+//     /* Un peu plus joli */
+//     margin-bottom: 2px;
 
-    &:hover {
-        background-color: #1f1f22;
-    }
-}
+//     &:hover {
+//         background-color: #1f1f22;
+//     }
+// }
 
-.step-icon-box {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #18181b;
-    border-radius: 6px;
-    margin-right: 12px;
-    font-size: 0.9rem;
-}
+// .step-icon-box {
+//     width: 30px;
+//     height: 30px;
+//     display: flex;
+//     align-items: center;
+//     justify-content: center;
+//     background: #18181b;
+//     border-radius: 6px;
+//     margin-right: 12px;
+//     font-size: 0.9rem;
+// }
 
-.step-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+// .step-content {
+//     flex: 1;
+//     display: flex;
+//     flex-direction: column;
+//     overflow: hidden;
 
-    .step-title {
-        font-size: 0.85rem;
-        font-weight: 600;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
+//     .step-title {
+//         font-size: 0.85rem;
+//         font-weight: 600;
+//         white-space: nowrap;
+//         overflow: hidden;
+//         text-overflow: ellipsis;
+//     }
 
-    .step-subtitle {
-        font-size: 0.7rem;
-        color: #71717a;
-        margin-top: 2px;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
-}
+//     .step-subtitle {
+//         font-size: 0.7rem;
+//         color: #71717a;
+//         margin-top: 2px;
+//         white-space: nowrap;
+//         overflow: hidden;
+//         text-overflow: ellipsis;
+//     }
+// }
 
-.step-status {
-    margin-left: 10px;
-    font-size: 0.65rem;
-    color: #52525b;
-    font-family: monospace;
-}
+// .step-status {
+//     margin-left: 10px;
+//     font-size: 0.65rem;
+//     color: #52525b;
+//     font-family: monospace;
+// }
 
-.empty-state {
-    padding: 40px;
-    text-align: center;
-    color: #52525b;
+// .empty-state {
+//     padding: 40px;
+//     text-align: center;
+//     color: #52525b;
 
-    i {
-        font-size: 2rem;
-        margin-bottom: 10px;
-    }
+//     i {
+//         font-size: 2rem;
+//         margin-bottom: 10px;
+//     }
 
-    p {
-        font-size: 0.8rem;
-    }
-}
+//     p {
+//         font-size: 0.8rem;
+//     }
+// }

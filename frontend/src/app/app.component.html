@@ -70,29 +70,34 @@
 
             <!-- DROITE -->
             <ng-template pTemplate>
+                <!-- Le conteneur Flex qui tient tout le panneau droit -->
                 <div class="h-full w-full flex flex-col bg-[#18181b] border-l border-[#27272a]"
                     [style.display]="isRightVisible ? 'flex' : 'none'">
+            
+                    <!-- LE TABVIEW : On lui dit explicitement d'être flexible -->
                     <p-tabView>
+            
+                        <!-- Onglet 1 : Code -->
                         <p-tabPanel header="Code" leftIcon="pi pi-code">
                             <app-code-editor *ngIf="appService.currentSelection() as curr"
-                                [code]="curr.latex_code"></app-code-editor>
+                                [code]="curr.latex_code" class="block h-full w-full"> </app-code-editor>
                         </p-tabPanel>
-                        <!-- ONGLET 2 : DONNÉES STRUCTURÉES -->
+            
+                        <!-- Onglet 2 : Construction -->
                         <p-tabPanel>
                             <ng-template pTemplate="header">
                                 <div class="flex items-center gap-2">
-                                    <i class="pi pi-list"></i> <!-- J'ai changé l'icone pour une liste -->
-                                    <span>Construction</span> <!-- J'ai renommé pour faire plus pro -->
+                                    <i class="pi pi-list"></i>
+                                    <span>Construction</span>
                                 </div>
                             </ng-template>
                         
-                            <!-- ON REMPLACE LE JSON VIEWER PAR TON NOUVEAU COMPOSANT -->
-                            <!-- On lui passe 'current.json_content' qui contient les données brutes -->
-                            <div class="h-full overflow-hidden">
-                                <app-construction-tree [data]="appService.currentSelection()?.json_content"></app-construction-tree>
-                            </div>
+                        
+                            <app-construction-tree [data]="appService.currentSelection()?.json_content" class="block h-full w-full">
+                            </app-construction-tree>
                         
                         </p-tabPanel>
+            
                     </p-tabView>
                 </div>
             </ng-template>

@@ -1,19 +1,53 @@
+/* On s'assure que le composant remplit l'onglet */
 :host {
     display: block;
     height: 100%;
-    /* CRUCIAL : Dit au composant de remplir l'onglet */
-    overflow: hidden;
-    /* Empêche le composant de dépasser */
+    width: 100%;
 }
 
-/* Force CodeMirror à remplir le conteneur */
-:host ::ng-deep .cm-editor {
-    height: 100%;
-    font-size: 14px;
-}
+/* 
+   --- CODEMIRROR OVERRIDES --- 
+   C'est la partie CRUCIALE pour le scroll.
+   On tape dans les classes internes de CodeMirror (::ng-deep).
+*/
+:host ::ng-deep {
 
-:host ::ng-deep .cm-scroller {
-    overflow: auto;
-    /* C'est CodeMirror qui gère le scroll, pas le body */
-    font-family: 'Consolas', 'Monaco', monospace;
+    /* 1. L'éditeur global doit prendre 100% de la div #editorContainer */
+    .cm-editor {
+        height: 100% !important;
+        font-family: 'Fira Code', 'Consolas', 'Monaco', monospace;
+        /* Police Pro */
+        font-size: 13px;
+    }
+
+    /* 2. La zone de scroll interne de CodeMirror */
+    .cm-scroller {
+        overflow: auto !important;
+        /* Active le scroll natif */
+        padding-top: 10px;
+    }
+
+    /* 3. La gouttière (numéros de ligne) */
+    .cm-gutters {
+        background-color: #1e1e1e;
+        /* Fond sombre homogène */
+        border-right: 1px solid #3f3f46;
+        color: #858585;
+    }
+    // .cm-content {
+    //     min-height: 100%;
+    // }
+
+    /* 4. La ligne active */
+    .cm-activeLine,
+    .cm-activeLineGutter {
+        background-color: #ffffff0d;
+        /* Surbrillance subtile */
+    }
+
+    /* 5. Selection */
+    .cm-selectionBackground {
+        background-color: #264f78 !important;
+        /* Bleu VS Code */
+    }
 }
